@@ -1,0 +1,32 @@
+household_power_consumption <- read.csv("C:/Users/Shelby/Downloads/household_power_consumption.txt", sep=";")
+library(dplyr)
+pwrdat <- filter(household_power_consumption, Date == "1/2/2007" | Date == "2/2/2007")
+#mutate(pwrdat, goodtime = paste(as.character(Date), as.character(Time)))
+goodtime = paste(as.character(pwrdat$Date), as.character(pwrdat$Time))
+pwrdat$Time <- goodtime
+pwrdat$Time <- strptime(pwrdat$Time, format = "%d/%m/%Y %H:%M:%S")
+pwrdat$Date <- strftime(pwrdat$Time, format = "%a")
+
+# pwrdat$Global_active_power <- as.double(pwrdat$Global_active_power)
+# pwrdat$Global_reactive_power <- as.double(pwrdat$Global_reactive_power)
+# pwrdat$Voltage <- as.numeric(pwrdat$Voltage)
+# pwrdat$Sub_metering_1 <- as.double(pwrdat$Sub_metering_1)
+# pwrdat$Sub_metering_2 <- as.double(pwrdat$Sub_metering_2)
+# pwrdat$Sub_metering_3 <- as.double(pwrdat$Sub_metering_3)
+
+pwrdat$Global_active_power <- as.numeric(as.character(pwrdat$Global_active_power))
+pwrdat$Global_reactive_power <- as.numeric(as.character(pwrdat$Global_reactive_power))
+pwrdat$Voltage <- as.numeric(as.character(pwrdat$Voltage))
+pwrdat$Sub_metering_1 <- as.numeric(as.character(pwrdat$Sub_metering_1))
+pwrdat$Sub_metering_2 <- as.numeric(as.character(pwrdat$Sub_metering_2))
+pwrdat$Sub_metering_3 <- as.numeric(as.character(pwrdat$Sub_metering_3))
+
+par(mfrow = c(2, 2))
+plot(pwrdat$Time, pwrdat$Global_active_power, type ="l", ylab =" Global Active Power", xlab ="")
+plot(pwrdat$Time, pwrdat$Sub_metering_1, type ="l", ylab = "Energy sub metering", xlab ="", ) 
+points(pwrdat$Time, pwrdat$Sub_metering_2, type ="l", col ="red")
+points(pwrdat$Time, pwrdat$Sub_metering_3 , type ="l", col ="blue")
+legend( x= "top", c("Sub_metering_1","Sub_metering_2","Sub_metering_3" ), ncol = 3, lty=c(3,1), col=c("black", "blue","red") , inset = c(-4,0 ), cex= 0.5)
+
+plot(pwrdat$Time, pwrdat$Voltage, type ="l", xlab = "datetime", ylab ="Voltage")
+plot(pwrdat$Time, pwrdat$Global_reactive_power, type ="l", ylab= "Global_reactive_power", xlab ="datetime")
